@@ -3,6 +3,8 @@ from kivy.uix.screenmanager import ScreenManager,Screen
 from kivy.lang import Builder
 import time
 from fileShare import FileSharer
+from kivy.core.clipboard import Clipboard
+import webbrowser
 Builder.load_file('frontend.kv')
 
 class CameraScreen(Screen):
@@ -25,8 +27,19 @@ class ImageScreen(Screen):
     def create_link(self):
         file_path=App.get_running_app().root.ids.camera_screen.filename
         filesharer=FileSharer(filepath=file_path)
-        url=filesharer.share()
-        self.ids.link.text=url
+        self.url=filesharer.share()
+        self.ids.link.text=self.url
+    def copy_link(self):
+        try:
+            Clipboard.copy(self.url)
+        except:
+            self.ids.link.text="Create a link first"
+
+    def open_link(self):
+        try:
+            webbrowser.open(self.url)
+        except:
+            self.ids.link.text="Create a link first"
 
 
 
